@@ -33,8 +33,8 @@ def converter(dir_path):
 
 def resizer(dir_path, new_width, new_height):
     '''not applied on .heic .HEIC format '''
-    if not os.path.exists(dir_path+"_convert"):
-        os.makedirs(dir_path+"_convert")
+    if not os.path.exists(dir_path+"_resize"):
+        os.makedirs(dir_path+"_resize")
     file_names = os.listdir(dir_path)
     for file_name in file_names:
         file_path = os.path.join(dir_path, file_name)
@@ -45,8 +45,8 @@ def resizer(dir_path, new_width, new_height):
         cv2.imwrite(new_file_path, resized_image)
 
 def cropper(dir_path):
-    if not os.path.exists(dir_path+"_convert"):
-        os.makedirs(dir_path+"_convert")
+    if not os.path.exists(dir_path+"_crop"):
+        os.makedirs(dir_path+"_crop")
     file_names = os.listdir(dir_path)
     for file_name in file_names:
         file_path = os.path.join(dir_path, file_name)
