@@ -8,7 +8,7 @@
 
   , "path": {
     "root": "superresolution"  // "denoising" | "superresolution"
-    , "pretrained_netG": null  // path of pretrained model
+    , "pretrained_netG": "model_zoo/BSRGAN.pth"  // path of pretrained model 끊었다 학습할때 반드시 체크
     , "pretrained_netD": null  // path of pretrained model
 	, "pretrained_netE": null  // path of pretrained model
 	}
@@ -16,7 +16,7 @@
   , "datasets": {
     "train": {
       "name": "train_dataset"           // fixed
-      , "dataset_type": "blindsr"       // "dncnn" | "dnpatch" | "fdncnn" | "ffdnet" | "sr" | "srmd" | "dpsr" | "plain" | "plainpatch"
+      , "dataset_type": "sr"       // "dncnn" | "dnpatch" | "fdncnn" | "ffdnet" | "sr" | "srmd" | "dpsr" | "plain" | "plainpatch"
       , "dataroot_H": "../datasets/Train_x4/train_HR"    // path of H training dataset
       , "dataroot_L": "../datasets/Train_x4/train_LR"    // path of L training dataset
 
@@ -32,7 +32,7 @@
     }
     , "test": {
       "name": "test_dataset"            // fixed
-      , "dataset_type": "blindsr"
+      , "dataset_type": "sr"
 
       , "degradation_type": "bsrgan"    // "bsrgan" | "bsrgan_plus"
       , "H_size": 320                   // patch_size 256 | 288 | 320
@@ -40,7 +40,7 @@
       , "lq_patchsize": 72
       , "use_sharp": false
 
-      , "dataroot_H": "testsets/RealSRSet"   // path of H testing dataset
+      , "dataroot_H": "../datasets/sample_images_convert"   // path of H testing dataset
       , "dataroot_L": null              // path of L testing dataset
     }
   }
@@ -114,8 +114,8 @@
     , "D_param_strict": true
     , "E_param_strict": true
 
-    , "checkpoint_test": 50000000000  // skip testing
-    , "checkpoint_save": 5000
+    , "checkpoint_test": 200  // skip testing
+    , "checkpoint_save": 1000
     , "checkpoint_print": 200
   }
 }
