@@ -80,7 +80,7 @@ def cropper(dir_path):
 
         x, y, w, h = second_largest[0], second_largest[1], second_largest[2], second_largest[3]
         # Draw rectangle on image
-        cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        #cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
         new_file_path = os.path.join(dir_path+"_crop", f"crop_{file_name}")
         cv2.imwrite(new_file_path, image)
 
