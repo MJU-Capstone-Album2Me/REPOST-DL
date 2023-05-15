@@ -8,9 +8,9 @@
 
   , "path": {
     "root": "superresolution"  // "denoising" | "superresolution"
-    , "pretrained_netG": "model_zoo/BSRGAN.pth"  // path of pretrained model 끊었다 학습할때 반드시 체크
-    , "pretrained_netD": null  // path of pretrained model
-	, "pretrained_netE": null  // path of pretrained model
+    , "pretrained_netG": "superresolution/bsrgan_x4_gan/models/38000_G.pth"  // path of pretrained model
+    , "pretrained_netD": "superresolution/bsrgan_x4_gan/models/38000_D.pth"  // path of pretrained model
+	, "pretrained_netE": "superresolution/bsrgan_x4_gan/models/38000_E.pth"  // path of pretrained model
 	}
 
   , "datasets": {
