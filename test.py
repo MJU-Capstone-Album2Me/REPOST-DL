@@ -10,7 +10,7 @@ from models.network_rrdbnet import RRDBNet as net
 from torchsummary import summary
 
 ###
-from myutils import resizer, cropper
+from myutils import converter, resizer, cropper
 
 """
 Spyder (Python 3.6-3.7)
@@ -47,14 +47,14 @@ def main():
     
     ### 이미지 포맷 변환 후 height를 고정해 해상도 낮춰보고 blind sr
     #converter("../datasets/sample_images")
-    resizer("../datasets/sample_images_convert", 512)
+    resizer("../datasets/sample_images_convert", 1024)
 
 
     testsets = '../datasets'       # fixed, set path of testsets
-    testset_Ls = ['sample_images_convert']  # ['RealSRSet','DPED']
+    testset_Ls = ['sample_images_convert_resize']  # ['RealSRSet','DPED']
 
     model_names = ['RRDB','ESRGAN','FSSR_DPED','FSSR_JPEG','RealSR_DPED','RealSR_JPEG']
-    model_names = ['BSRGAN']    # 'BSRGANx2' for scale factor 2 or 'BSRGAN'
+    model_names = ['BSRGANx2']    # 'BSRGANx2' for scale factor 2 or 'BSRGAN'
 
 
 
@@ -63,9 +63,14 @@ def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print("device:",device)
     for model_name in model_names:
+        # set scale factor
         if model_name in ['BSRGANx2']:
             sf = 2
-        model_path = os.path.join('model_zoo', model_name+'.pth')          # set model path
+        # model_path = os.path.join('model_zoo', model_name+'.pth')   ### set model path
+        # path = 'model_zoo/BSRGAN.pth' ### x4 baseline
+        path = 'model_zoo/BSRGANx2.pth' ### x4 baseline
+        # path = 'superresolution/bsrgan_x4_gan/models/5000_E.pth'
+        model_path = os.path.join(path)   ##### set model path
         logger.info('{:>16s} : {:s}'.format('Model Name', model_name))
 
         # torch.cuda.set_device(0)      # set GPU ID
@@ -87,7 +92,7 @@ def main():
         for k, v in model.named_parameters():
             v.requires_grad = False
         model = model.to(device)
-		# check model parameter
+	# check model parameter
         ### print(summary(model, (3, 1024, 1024)))
         torch.cuda.empty_cache()
 
@@ -95,7 +100,7 @@ def main():
 
             L_path = os.path.join(testsets, testset_L)
             #E_path = os.path.join(testsets, testset_L+'_'+model_name)
-            E_path = os.path.join(testsets, testset_L+'_results_x'+str(sf))
+            E_path = os.path.join(testsets, testset_L+'_results_x'+str(sf)+"_"+path.split("/")[-1])
             util.mkdir(E_path)
 
             logger.info('{:>16s} : {:s}'.format('Input Path', L_path))
