@@ -1,3 +1,7 @@
-matplotlib
 pyheif
 Pillow
+tqdm==4.65.0
+numpy
+pandas
+opencv
+torch==1.12.1+cu113
