@@ -6,34 +6,8 @@ from utils import utils_logger
 from utils import utils_image as util
 # from utils import utils_model
 from models.network_rrdbnet import RRDBNet as net
-
 from torchsummary import summary
-
-###
-from myutils import resizer, cropper
-
-"""
-Spyder (Python 3.6-3.7)
-PyTorch 1.4.0-1.8.1
-Windows 10 or Linux
-Kai Zhang (cskaizhang@gmail.com)
-github: https://github.com/cszn/BSRGAN
-        https://github.com/cszn/KAIR
-If you have any question, please feel free to contact with me.
-Kai Zhang (e-mail: cskaizhang@gmail.com)
-by Kai Zhang ( March/2020 --> March/2021 --> )
-This work was previously submitted to CVPR2021.
-
-# --------------------------------------------
-@inproceedings{zhang2021designing,
-  title={Designing a Practical Degradation Model for Deep Blind Image Super-Resolution},
-  author={Zhang, Kai and Liang, Jingyun and Van Gool, Luc and Timofte, Radu},
-  booktitle={arxiv},
-  year={2021}
-}
-# --------------------------------------------
-
-"""
+from myutils import converter, resizer, cropper
 
 
 def main():
@@ -47,14 +21,14 @@ def main():
     
     ### 이미지 포맷 변환 후 height를 고정해 해상도 낮춰보고 blind sr
     #converter("../datasets/sample_images")
-    resizer("../datasets/sample_images_convert", 512)
+    resizer("../datasets/sample_images_convert", 1024)
 
 
     testsets = '../datasets'       # fixed, set path of testsets
-    testset_Ls = ['sample_images_convert']  # ['RealSRSet','DPED']
+    testset_Ls = ['sample_images_convert_resize']  # ['RealSRSet','DPED']
 
     model_names = ['RRDB','ESRGAN','FSSR_DPED','FSSR_JPEG','RealSR_DPED','RealSR_JPEG']
-    model_names = ['BSRGAN']    # 'BSRGANx2' for scale factor 2 or 'BSRGAN'
+    model_names = ['BSRGANx2']    # 'BSRGANx2' for scale factor 2 or 'BSRGAN'
 
 
 
@@ -63,9 +37,14 @@ def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print("device:",device)
     for model_name in model_names:
+        # set scale factor
         if model_name in ['BSRGANx2']:
             sf = 2
-        model_path = os.path.join('model_zoo', model_name+'.pth')          # set model path
+        # model_path = os.path.join('model_zoo', model_name+'.pth')   ### set model path
+        # path = 'model_zoo/BSRGAN.pth' ### x4 baseline
+        path = 'model_zoo/BSRGANx2.pth' ### x2 baseline
+        # path = 'superresolution/bsrgan_x4_gan/models/5000_E.pth'
+        model_path = os.path.join(path)   ### set model path
         logger.info('{:>16s} : {:s}'.format('Model Name', model_name))
 
         # torch.cuda.set_device(0)      # set GPU ID
@@ -76,26 +55,22 @@ def main():
         # define network and load model
         # --------------------------------
         model = net(in_nc=3, out_nc=3, nf=64, nb=23, gc=32, sf=sf)  # define network
-#            model_old = torch.load(model_path)
-#            state_dict = model.state_dict()
-#            for ((key, param),(key2, param2)) in zip(model_old.items(), state_dict.items()):
-#                state_dict[key2] = param
-#            model.load_state_dict(state_dict, strict=True)
 
         model.load_state_dict(torch.load(model_path), strict=True)
         model.eval()
         for k, v in model.named_parameters():
             v.requires_grad = False
         model = model.to(device)
-		# check model parameter
-        ### print(summary(model, (3, 1024, 1024)))
+
+	# check model parameter
+        ### print(summary(model, (3, 1024, 1024))) # torchsummary
         torch.cuda.empty_cache()
 
         for testset_L in testset_Ls:
 
             L_path = os.path.join(testsets, testset_L)
             #E_path = os.path.join(testsets, testset_L+'_'+model_name)
-            E_path = os.path.join(testsets, testset_L+'_results_x'+str(sf))
+            E_path = os.path.join(testsets, testset_L+'_results_x'+str(sf)+"_"+path.split("/")[-1])
             util.mkdir(E_path)
 
             logger.info('{:>16s} : {:s}'.format('Input Path', L_path))
