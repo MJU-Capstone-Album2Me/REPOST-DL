@@ -13,9 +13,9 @@ pip install -r requirements.txt
 
 ```
 python inference.py 
-    -m BSRGANx2             # model
-    -dir dir/for/inference   # directory for inference
-    --disable_cuda             #Disable CUDA
+    -m BSRGANx2                # model
+    -dir dir/for/inference     # directory for inference
+    --disable_cuda             # Disable CUDA
 ```
 
-You can change the ```-d``` to BSRGAN w/ scale factor==4. 
+You can change the ```-m``` to BSRGAN w/ scale factor==4. 
