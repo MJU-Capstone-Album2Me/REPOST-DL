@@ -1,6 +1,8 @@
 import os.path
 import logging
 import torch
+import argparse
+
 
 from utils import utils_logger
 from utils import utils_image as util
@@ -10,7 +12,7 @@ from torchsummary import summary
 from myutils import converter, resizer, cropper
 
 
-def main():
+def main(params):
 
     utils_logger.logger_info('blind_sr_log', log_path='blind_sr_log.log')
     logger = logging.getLogger('blind_sr_log')
@@ -19,32 +21,33 @@ def main():
 #    print(torch.version.cuda)              # cuda version
 #    print(torch.backends.cudnn.version())  # cudnn version
     
-    ### 이미지 포맷 변환 후 height를 고정해 해상도 낮춰보고 blind sr
-    #converter("../datasets/sample_images")
-    resizer("../datasets/sample_images_convert", 1024)
+    ### 이미지 포맷 변환 후 height를 고정해 blind sr
+    converter(params.directory)
+    resizer(os.path.join(params.directory+"_convert"), 1024)
 
-
+    # -dir, -m
     testsets = '../datasets'       # fixed, set path of testsets
     testset_Ls = ['sample_images_convert_resize']  # ['RealSRSet','DPED']
 
     model_names = ['RRDB','ESRGAN','FSSR_DPED','FSSR_JPEG','RealSR_DPED','RealSR_JPEG']
-    model_names = ['BSRGANx2']    # 'BSRGANx2' for scale factor 2 or 'BSRGAN'
-
+    # model_names = ['BSRGANx2']    # 'BSRGANx2' for scale factor 2 or 'BSRGAN'
+    model_names = [params.model]
+    print(model_names)
 
 
     save_results = True
     sf = 4
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    device = params.device
     print("device:",device)
     for model_name in model_names:
         # set scale factor
         if model_name in ['BSRGANx2']:
             sf = 2
-        # model_path = os.path.join('model_zoo', model_name+'.pth')   ### set model path
-        # path = 'model_zoo/BSRGAN.pth' ### x4 baseline
-        path = 'model_zoo/BSRGANx2.pth' ### x2 baseline
-        # path = 'superresolution/bsrgan_x4_gan/models/5000_E.pth'
-        model_path = os.path.join(path)   ### set model path
+        model_path = os.path.join('model_zoo', model_name+'.pth')   ### set model path
+        # path = "model_zoo/BSRGAN.pth" ### x4 baseline
+        # path = "model_zoo/BSRGANx2.pth" ### x2 baseline
+        # path = "superresolution/bsrgan_x4_gan/models/5000_E.pth"
+        # model_path = os.path.join(path)   ### set model path
         logger.info('{:>16s} : {:s}'.format('Model Name', model_name))
 
         # torch.cuda.set_device(0)      # set GPU ID
@@ -70,7 +73,7 @@ def main():
 
             L_path = os.path.join(testsets, testset_L)
             #E_path = os.path.join(testsets, testset_L+'_'+model_name)
-            E_path = os.path.join(testsets, testset_L+'_results_x'+str(sf)+"_"+path.split("/")[-1])
+            E_path = os.path.join(testsets, testset_L+'_results_x'+str(sf)+"_"+model_path.split("/")[-1])
             util.mkdir(E_path)
 
             logger.info('{:>16s} : {:s}'.format('Input Path', L_path))
@@ -105,4 +108,20 @@ def main():
 
 if __name__ == '__main__':
 
-    main()
+    parser = argparse.ArgumentParser(description='BSRGAN')
+
+    # setup for inference
+    parser.add_argument("--directory","-dir", type=str, default="../datasets/sample_images",
+                        help="Which directory to inference")
+    parser.add_argument("--model","-m", type=str, default="BSRGANx2",
+                        help="which model to inference. BSRGANx2 or BSRGAN")
+    parser.add_argument('--disable_cuda', action='store_true',
+                        help='Disable CUDA')
+    params = parser.parse_args()
+
+    if not params.disable_cuda and torch.cuda.is_available():
+        params.device = torch.device("cuda:0")
+    else:
+        params.device = torch.device("cpu")
+
+    main(params)

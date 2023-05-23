@@ -11,6 +11,7 @@ def converter(dir_path):
     file_names = os.listdir(dir_path)
     for file_name in file_names:
         file_path = os.path.join(dir_path, file_name)
+        print(file_path)
         file_name_exceptformat, img_format  = file_name.split(".")
         if img_format in ['heic', 'HEIC']:
             heif_file = pyheif.read(file_path)
@@ -42,7 +43,7 @@ def resizer(dir_path, new_height): # scale_factor, down=True
         height, width, channels = image.shape
         aspect_ratio = round(float(width / height),3)
         scale_factor = round(max((new_height / height), (height / new_height)),3)
-        print("aspect_ratio: ", aspect_ratio, "scale_factor: ", scale_factor)
+        # print("aspect_ratio: ", aspect_ratio, "scale_factor: ", scale_factor)
         new_width = int(aspect_ratio * new_height)
         resized_image = cv2.resize(image, (new_width, new_height))
         new_file_path = os.path.join(dir_path+"_resize", f"resize_{file_name}")
