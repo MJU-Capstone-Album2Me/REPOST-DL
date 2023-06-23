@@ -26,6 +26,7 @@ You can change the ```-m``` to BSRGAN w/ scale factor==4.
 |:---|:---|
 |GPU|Nvidia RTX 3080 12GB| 
 |CUDA Version|11.4|
+|cuDNN|8.7.0|
 |Nvidia Driver Version|470.182.03|
 |OS|ubuntu 20.04 LTS|
 |torch|1.12.1+cu113|
