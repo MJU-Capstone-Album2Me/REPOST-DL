@@ -20,6 +20,17 @@ python inference.py
 
 You can change the ```-m``` to BSRGAN w/ scale factor==4. 
 
+
+## Training Environment
+|||
+|:---|:---|
+|GPU|Nvidia RTX 3080 12GB| 
+|CUDA Version|11.4|
+|Nvidia Driver Version|470.182.03|
+|OS|ubuntu 20.04 LTS|
+|torch|1.12.1+cu113|
+
+
 ## Model Pipeline
 <img width="1080" alt="model_pipeline" src="https://github.com/MJU-Capstone-Album2Me/REPOST-DL/assets/91061904/37bc6cbb-af7a-4c18-b2ea-7abe931e24bd">
 
