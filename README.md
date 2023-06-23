@@ -19,3 +19,6 @@ python inference.py
 ```
 
 You can change the ```-m``` to BSRGAN w/ scale factor==4. 
+
+## Model Pipeline
+![파이프라인](https://github.com/MJU-Capstone-Album2Me/REPOST-DL/assets/91061904/37bc6cbb-af7a-4c18-b2ea-7abe931e24bd)
