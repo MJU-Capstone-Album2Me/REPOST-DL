@@ -13,7 +13,6 @@
 
 <br><br>
 
-<br><br>
 ## 기술 스택
 <p align="center">
 <img src="https://img.shields.io/badge/Java 17-008FC7?style=for-the-badge&logo=Java&logoColor=white"/>
